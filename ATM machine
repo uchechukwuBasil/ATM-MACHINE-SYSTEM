@@ -1,0 +1,247 @@
+// Created by Basil uche 
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include<sstream>
+
+using namespace std;
+
+float Amount, withdrawal, deposite, RemainBalance;
+float opt1 = 20, opt2 = 50, opt3 = 100, opt4 = 200, opt5 = 300, opt6 = 400, opt7 = 500;
+string username,password, un, pw;
+char opt;
+
+int Str2Float(string s)
+
+    {
+        stringstream ss;
+        int result = 0;
+        ss << s;
+        ss >> result;
+        return result;
+    }
+
+float StrFloat()
+{
+        float result = 0;
+        ifstream Balance("Amount.txt");
+        if (Balance.is_open())
+            {
+                string am;
+                getline(Balance, am);
+                result = Str2Float(am);
+                Balance.close();
+            }
+        Amount = result;
+}
+
+bool LoggedIn()
+
+    {
+        cout << "  WELLCOME TO OUR ATM SYSTEM  \n" << endl;
+        cout << "\tEnter Accout No: ";
+        cin >> username;
+        cout << "\tEnter PIN: ";
+        cin >> password;
+        ifstream read("UserInfo.txt");
+        getline(read, un);
+        getline(read, pw);
+        if (un == username && pw == password)
+            {
+                return true;
+            }
+        else
+            {
+                return false;
+            }
+    }
+
+void manu()
+
+    {
+        cout << "  WELLCOME TO OUR ATM SYSTEM  \n" << endl;
+        cout << "\t1: Check Balance";
+        cout << "\t2: Withdrawal\n";
+        cout << "\t3: Deposite";
+        cout << "\t\t4: Change PIN Code\n";    
+        cout << "\t5: System Exit\n";
+    }
+
+void CheckBalance()
+
+    {    
+        cout << "  WELLCOME TO OUR ATM SYSTEM  \n" << endl;
+        StrFloat();
+        cout << "Your Amount: " << Amount << endl;
+    }
+    
+float Withdrawal()
+    {     
+        cout << "  WELLCOME TO OUR ATM SYSTEM  \n" << endl;
+        cout << " \t 1: 20";
+        cout << " \t\t\t 2: 50\n";
+        cout << " \t 3: 100";
+        cout << " \t\t 4: 200\n";
+        cout << " \t 5: 300";
+        cout << " \t\t 5: 400\n";
+        cout << " \t 7: 500";
+        cout << " \t\t 8: Other\n";
+        cout << "Enter Your Option: ";
+        cin >> opt;
+        switch (opt)
+            {
+                case '1':
+                    withdrawal = opt1;    
+                    break;
+                case '2':
+                    withdrawal = opt2;    
+                        break;
+                case '3':
+                    withdrawal = opt3;    
+                        break;
+                case '4':
+                    withdrawal = opt4;    
+                        break;
+                case '5':
+                    withdrawal = opt5;    
+                        break;
+                case '6':
+                    withdrawal = opt6;    
+                        break;
+                case '7':
+                    withdrawal = opt7;    
+                        break;
+                case '8':
+                    cout << "Enter Your Withdrawal: ";
+                    cin >> withdrawal;        
+                        break;
+                default:
+                    cout << "Your Option is Wrong.";                        
+            }
+        StrFloat();
+        RemainBalance = Amount - withdrawal;
+        ofstream Balance;
+        Balance.open("Amount.txt");
+        Balance << RemainBalance;
+        Balance.close();
+        cout << "Your Withdrawal Amount is " << withdrawal << endl;
+        return withdrawal;
+    }
+    
+float Deposite()
+    {    
+        cout << "  WELLCOME TO OUR ATM SYSTEM  \n" << endl;
+        cout << "Enter Your Deposite: ";
+        cin >> deposite;
+        StrFloat();
+        RemainBalance = Amount + deposite;
+        ofstream Balance;
+        Balance.open("Amount.txt");
+        Balance << RemainBalance;
+        Balance.close();
+        cout << "Your Deposite Amount is " << deposite << endl;
+        return deposite;
+    }
+
+int main()
+    {
+        char an;
+        int choice;
+            
+        LOGIN:    
+        if (!LoggedIn())
+            {    
+                cout << "False Login" << endl;
+                cout << "Please Try Again!\n"; 
+                system ("pause");
+                system ("cls");
+                goto LOGIN;
+            }
+        else 
+            {
+                cout << "Succesfully Logged In" << endl;
+                system ("cls");
+                MANU:
+                manu();
+                CHOICE:
+                cout << "Enter Your Choice: ";
+                cin >> choice;
+                switch(choice)
+                    {
+                        case 1 :
+                            system ("cls");
+                            CheckBalance();
+                            break;
+                        case 2 : 
+                            system ("cls");
+                            Withdrawal();
+                            break;
+                        case 3:
+                            system ("cls");
+                            Deposite();
+                            break;
+                        case 4:
+                            system ("cls");
+                            {
+                                string confirm = "";
+                                string Old = "";
+                                string New = "";
+                                string tmp_user = "";
+                                string tmp_pass = "";
+                                ifstream read ("UserInfo.txt");
+                                getline(read, un);
+                                getline(read, pw);
+                                ODL:
+  cout << "  WELLCOME TO OUR ATM SYSTEM  \n" << endl;
+                                
+           cout << "Enter Your Old Password: ";
+                                cin >> Old;
+                                if (pw == Old)
+                                    {
+                                        tmp_user = un;  
+                                        cout << "Enter Your New Password: ";
+                                        cin >> New;
+                                        cout << "Enter Your Comfirm Password: ";
+                                        cin >> confirm;
+                                        if (New == confirm)
+                                            {
+                                                tmp_pass = Old;
+                                                tmp_pass = confirm ;
+                                                string tmp = "\n";
+                                                ofstream write;
+                                                write.open("UserInfo.txt");
+                                                write << tmp_user;
+                                                write << tmp;
+                                                write << tmp_pass;    
+                                                write.close();    
+                                                cout << "Your Password Has Changed.\n";
+                                            }
+                                    }
+                                else 
+                                    {    
+ cout << "\  WELLCOME TO OUR ATM SYSTEM  \n" << endl;
+                                      
+                                       cout << "Your Old Password is wrong.\n Please try again!\n";
+                                        system ("cls");
+                                        goto ODL;
+                                    }
+                            }
+                            break;
+                        case 5 :
+                            exit(0);
+                            break;
+                        default :
+                            cout << "Please Try Again!\n";
+                            goto CHOICE;
+                    }
+                cout << "Do You Want To Do Any Transaction?\n (Y)Yes/(N)/No: ";
+                cin >> an;
+                if(an == 'Y'||an =='y')
+                    {
+                        system ("cls");
+                        goto MANU;
+                    }
+            }
+        return 0;
+    }
